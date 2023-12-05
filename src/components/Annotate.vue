@@ -1,54 +1,107 @@
-// this should be a component used in App.vue
-// you can upload a image and with a button click submit it in base64 to the api that will return the annotations
-// the annotations will be logged in the console
 <script setup lang="ts">
-import { StyleValue, ref } from 'vue'
-import axios, { AxiosResponse } from 'axios'
-
+import { ref } from "vue";
+import axios, { AxiosResponse } from "axios";
+import sizeOf from "image-size";
+import { Buffer } from "buffer";
 // base64 image
-const image = ref('')
-const annotations = ref([])
+const image = ref("");
+const imageDimensions = ref({ width: 0, height: 0 });
+const faceAnnotations = ref([]);
+const objectAnnotations = ref([]);
 
 const uploadImage = (e: Event) => {
   const file = (e.target as HTMLInputElement).files![0];
   const reader = new FileReader();
-  reader.onloadend = e => {
+  reader.onloadend = async (e) => {
     image.value = e.target!.result!.toString();
-    console.log(image.value.split(',')[0]);
-    console.log(image.value.split(',')[1]);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const size = sizeOf(buffer);
+    imageDimensions.value = {
+      width: size.width ?? 0,
+      height: size.height ?? 0,
+    };
   };
   reader.readAsDataURL(file);
-}
+};
 const annotateImage = () => {
-  axios.post("http://localhost:3000/api/annotate", {
-    image: image.value.split(',')[1]
-  }).then((response: AxiosResponse) => {
-    console.log(response.data);
-    annotations.value = response.data.responses[0].faceAnnotations.map((faceAnnotation: any) => {
-      return faceAnnotation.boundingPoly.vertices;
+  axios
+    .post("http://localhost:3000/api/annotate", {
+      image: image.value.split(",")[1],
     })
-  });
-}
+    .then((response: AxiosResponse) => {
+      console.log(response.data);
+      faceAnnotations.value = response.data.responses[0].faceAnnotations
+        .map((faceAnnotation: any) => {
+          return faceAnnotation.boundingPoly.vertices;
+        })
+        .sort((a: any, b: any) => {
+          return getZ(b) - getZ(a);
+        });
+      // normalizedvertices multiply by image dimensions
+      console.log(imageDimensions.value);
+      objectAnnotations.value =
+        response.data.responses[0].localizedObjectAnnotations
+          .map((objectAnnotation: any) => {
+            return objectAnnotation.boundingPoly.normalizedVertices.map(
+              (vertex: any) => {
+                return {
+                  x: vertex.x * imageDimensions.value.width,
+                  y: vertex.y * imageDimensions.value.height,
+                };
+              }
+            );
+          })
+          .sort((a: any, b: any) => {
+            return getZ(b) - getZ(a);
+          });
+    });
+};
 
 const getPolygonPoints = (polygon: Array<any>): string => {
-  return polygon.map((vertex: any) => {
-    return `${vertex.x},${vertex.y}`
-  }).join(' ');
-}
-
+  return polygon
+    .map((vertex: any) => {
+      return `${vertex.x},${vertex.y}`;
+    })
+    .join(" ");
+};
+const getZ = (polygon: Array<any>): number => {
+  const x = polygon.map((vertex: any) => {
+    return vertex.x;
+  });
+  const y = polygon.map((vertex: any) => {
+    return vertex.y;
+  });
+  const minX = Math.min.apply(null, x);
+  const maxX = Math.max.apply(null, x);
+  const minY = Math.min.apply(null, y);
+  const maxY = Math.max.apply(null, y);
+  const z = Math.sqrt(
+    Math.pow(maxX - minX, 2) + Math.pow(maxY - minY, 2)
+  );
+  return z;
+};
 </script>
 
 <template>
   <div class="card">
     <div class="image-container">
       <img class="image" v-if="image !== ''" :src="image" alt="image" />
-      <!-- bounding poly of the annotations -->
-      <!-- <div v-for="(box, index) in annotations" :key="index" class="bounding-box" :style="getBoxStyle(box)" /> -->
       <svg class="annotations-container">
-        <polygon v-for="(polygon, index) in annotations" :key="index" :points="getPolygonPoints(polygon)" class="annotation" />
+        <polygon
+          v-for="(polygon, index) in objectAnnotations"
+          :key="index"
+          :points="getPolygonPoints(polygon)"
+          class="object-annotation"
+        />
+        <polygon
+          v-for="(polygon, index) in faceAnnotations"
+          :key="index"
+          :points="getPolygonPoints(polygon)"
+          class="face-annotation"
+        />
       </svg>
     </div>
-    <input type="file" accept="image/*" @change=uploadImage>
+    <input type="file" accept="image/*" @change="uploadImage" />
     <button @click="annotateImage">Submit</button>
   </div>
 </template>
@@ -56,6 +109,7 @@ const getPolygonPoints = (polygon: Array<any>): string => {
 <style scoped>
 .image-container {
   position: relative;
+  width: 50%;
 }
 .image {
   width: 100%;
@@ -68,11 +122,22 @@ const getPolygonPoints = (polygon: Array<any>): string => {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none;
 }
-.annotation {
-  fill: none;
+.annotations-container polygon {
+  transform: scale(0.5);
+}
+.annotations-container polygon:hover {
+  stroke-width: 6;
+}
+.face-annotation {
+  fill: #00000000;
   stroke: #ff0000;
+  stroke-width: 3;
+}
+
+.object-annotation {
+  fill: #00000000;
+  stroke: #00ff00;
   stroke-width: 3;
 }
 </style>

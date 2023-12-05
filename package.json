@@ -11,6 +11,10 @@
   "dependencies": {
     "@vercel/node": "^3.0.7",
     "axios": "^1.6.0",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "image-size": "^1.0.2",
+    "vite-plugin-node-polyfills": "^0.17.0",
     "vite-plugin-vercel": "^2.0.0",
     "vue": "^3.3.4"
   },

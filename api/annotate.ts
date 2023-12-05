@@ -36,8 +36,8 @@ export default function handler(
     response: VercelResponse,
 ) {
     const { image } = request.body;
-    console.log(image);
     annotate(image).then((result) => {
+        console.log(result);
         response.status(200).send(result);
     });
 }

@@ -75,9 +75,7 @@ const getZ = (polygon: Array<any>): number => {
   const maxX = Math.max.apply(null, x);
   const minY = Math.min.apply(null, y);
   const maxY = Math.max.apply(null, y);
-  const z = Math.sqrt(
-    Math.pow(maxX - minX, 2) + Math.pow(maxY - minY, 2)
-  );
+  const z = Math.sqrt(Math.pow(maxX - minX, 2) + Math.pow(maxY - minY, 2));
   return z;
 };
 </script>
@@ -91,12 +89,16 @@ const getZ = (polygon: Array<any>): number => {
           v-for="(polygon, index) in objectAnnotations"
           :key="index"
           :points="getPolygonPoints(polygon)"
+          :data-title="`Object ${index + 1}`"
+          :data-text="`Object text ${index + 1}`"
           class="object-annotation"
         />
         <polygon
           v-for="(polygon, index) in faceAnnotations"
           :key="index"
           :points="getPolygonPoints(polygon)"
+          :data-title="`Face ${index + 1}`"
+          :data-text="`Face text ${index + 1}`"
           class="face-annotation"
         />
       </svg>

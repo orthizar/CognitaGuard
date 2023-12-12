@@ -23,10 +23,9 @@ const imageDimensions = ref({ width: 0, height: 0 });
 const faceAnnotations = ref([]);
 const objectAnnotations = ref([]);
 const url =
-  import.meta.env.VITE_APP_VERCEL_ENV === "production"
-    ? "https://" + import.meta.env.VITE_APP_VERCEL_URL
+  import.meta.env.VITE_VERCEL_ENV === "production"
+    ? "https://" + import.meta.env.VITE_VERCEL_URL
     : "http://localhost:3000";
-console.log(url);
 const annotateImage = () => {
   axios
     .post(url + "/api/annotate", {

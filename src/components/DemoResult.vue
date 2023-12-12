@@ -22,11 +22,11 @@ const props = defineProps<{
 const imageDimensions = ref({ width: 0, height: 0 });
 const faceAnnotations = ref([]);
 const objectAnnotations = ref([]);
-
+const url = process.env.VUE_APP_VERCEL_ENV === "production" ? "https://" + process.env.VUE_APP_VERCEL_URL : "http://localhost:3000";
 const annotateImage = () => {
   console.log(props.image);
   axios
-    .post(process.env.NEXT_PUBLIC_SITE_URL + "/api/annotate", {
+    .post(url + "/api/annotate", {
       image: props.image.split(",")[1],
     })
     .then((response: AxiosResponse) => {

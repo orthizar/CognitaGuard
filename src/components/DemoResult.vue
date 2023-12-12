@@ -22,9 +22,12 @@ const props = defineProps<{
 const imageDimensions = ref({ width: 0, height: 0 });
 const faceAnnotations = ref([]);
 const objectAnnotations = ref([]);
-const url = process.env.VITE_APP_VERCEL_ENV === "production" ? "https://" + process.env.VITE_APP_VERCEL_URL : "http://localhost:3000";
+const url =
+  import.meta.env.VITE_APP_VERCEL_ENV === "production"
+    ? "https://" + import.meta.env.VITE_APP_VERCEL_URL
+    : "http://localhost:3000";
+console.log(url);
 const annotateImage = () => {
-  console.log(props.image);
   axios
     .post(url + "/api/annotate", {
       image: props.image.split(",")[1],
@@ -32,28 +35,29 @@ const annotateImage = () => {
     .then((response: AxiosResponse) => {
       console.log(response);
 
-      faceAnnotations.value = response.data.responses[0]
-        .faceAnnotations?.map((faceAnnotation: any) => {
+      faceAnnotations.value = response.data.responses[0].faceAnnotations
+        ?.map((faceAnnotation: any) => {
           return faceAnnotation.boundingPoly.vertices;
         })
         .sort((a: any, b: any) => {
           return getZ(b) - getZ(a);
         });
       // normalizedvertices multiply by image dimensions
-      objectAnnotations.value = response.data.responses[0]
-        .localizedObjectAnnotations?.map((objectAnnotation: any) => {
-          return objectAnnotation.boundingPoly.normalizedVertices.map(
-            (vertex: any) => {
-              return {
-                x: vertex.x * imageDimensions.value.width,
-                y: vertex.y * imageDimensions.value.height,
-              };
-            }
-          );
-        })
-        .sort((a: any, b: any) => {
-          return getZ(b) - getZ(a);
-        });
+      objectAnnotations.value =
+        response.data.responses[0].localizedObjectAnnotations
+          ?.map((objectAnnotation: any) => {
+            return objectAnnotation.boundingPoly.normalizedVertices.map(
+              (vertex: any) => {
+                return {
+                  x: vertex.x * imageDimensions.value.width,
+                  y: vertex.y * imageDimensions.value.height,
+                };
+              }
+            );
+          })
+          .sort((a: any, b: any) => {
+            return getZ(b) - getZ(a);
+          });
     });
 };
 const getZ = (polygon: Array<any>): number => {

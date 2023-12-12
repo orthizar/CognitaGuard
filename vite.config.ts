@@ -10,7 +10,7 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 export default defineConfig({
   plugins: [
     vue(),
-    vercel(),
+    // vercel(),
     svgLoader(),
     nodePolyfills({
       globals: {

@@ -26,7 +26,7 @@ const objectAnnotations = ref([]);
 const annotateImage = () => {
   console.log(props.image);
   axios
-    .post("http://localhost:3000/api/annotate", {
+    .post(process.env.NEXT_PUBLIC_SITE_URL + "/api/annotate", {
       image: props.image.split(",")[1],
     })
     .then((response: AxiosResponse) => {

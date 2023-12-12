@@ -37,6 +37,7 @@ export default function handler(
 ) {
     const { image } = request.body;
     annotate(image).then((result) => {
+        console.log(result);
         response.status(200).send(result);
     });
 }

@@ -11,11 +11,11 @@ const annotate = async (image: string) => {
                 features: [
                     {
                         type: "FACE_DETECTION",
-                        maxResults: 10,
+                        maxResults: 30,
                     },
                     {
                         type: "OBJECT_LOCALIZATION",
-                        maxResults: 10,
+                        maxResults: 30,
                     },
                 ],
             },
@@ -37,7 +37,6 @@ export default function handler(
 ) {
     const { image } = request.body;
     annotate(image).then((result) => {
-        console.log(result);
         response.status(200).send(result);
     });
 }

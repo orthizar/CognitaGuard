@@ -6,11 +6,11 @@
       <div class="bg-opacity-90 bg-dark rounded-[2.5rem] w-full h-full shadow-md p-16">
         <div class="flex h-full -mx-8">
           <div class="flex flex-col justify-between w-2/3 h-full px-8">
-            <FileUploadField />
+            <FileUploadField @upload="uploadFile" />
 
             <div class="flex items-center mt-16">
               <div class="w-full bg-primary h-0.5 mr-5"></div>
-              <button class="btn shrink-0">Bild analysieren</button>
+              <button class="btn shrink-0" @click="submitImage">Bild analysieren</button>
               <div class="w-full bg-primary h-0.5 ml-5"></div>
             </div>
           </div>
@@ -30,4 +30,14 @@
 
 <script setup lang="ts">
 import FileUploadField from '@/components/FileUploadField.vue';
+import { ref } from 'vue';
+const file = ref('');
+const uploadFile = (uploadedFile: string) => {
+  emit('submit', '');
+  file.value = uploadedFile;
+};
+const emit = defineEmits(['submit']);
+const submitImage = () => {
+  emit('submit', file.value);  
+};
 </script>

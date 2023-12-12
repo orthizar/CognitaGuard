@@ -24,7 +24,7 @@ const faceAnnotations = ref([]);
 const objectAnnotations = ref([]);
 const url =
   import.meta.env.VITE_VERCEL_ENV === "production"
-    ? "https://" + import.meta.env.VITE_VERCEL_URL
+    ? "https://cognitaguard.vercel.app"
     : "http://localhost:3000";
 const annotateImage = () => {
   axios

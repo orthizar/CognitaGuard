@@ -10,6 +10,7 @@
       :image-dimensions="imageDimensions"
       :annotations="objectAnnotations"
     />
+    <Score :faces="faces" :objects="objects" />
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import { ref, watch } from "vue";
 import sizeOf from "image-size";
 import { Buffer } from "buffer";
 import Annotate from "./Annotate.vue";
+import Score from "./Score.vue";
 const props = defineProps<{
   image: string;
 }>();
@@ -68,6 +70,8 @@ interface ObjectAnnotation {
 }
 
 const imageDimensions = ref({ width: 0, height: 0 });
+const faces = ref([]);
+const objects = ref([]);
 const faceAnnotations = ref([]);
 const objectAnnotations = ref([]);
 const url =
@@ -81,23 +85,42 @@ const annotateImage = () => {
     })
     .then((response: AxiosResponse) => {
       console.log(response);
-
+      faces.value = response.data.responses[0].faceAnnotations?.map(
+        (faceAnnotation: FaceAnnotation) => {
+          const face = {
+            joyLikelihood: faceAnnotation.joyLikelihood,
+            sorrowLikelihood: faceAnnotation.sorrowLikelihood,
+            angerLikelihood: faceAnnotation.angerLikelihood,
+            surpriseLikelihood: faceAnnotation.surpriseLikelihood,
+            underExposedLikelihood: faceAnnotation.underExposedLikelihood,
+            blurredLikelihood: faceAnnotation.blurredLikelihood,
+            headwearLikelihood: faceAnnotation.headwearLikelihood,
+          };
+          return face;
+        }
+      );
+      objects.value = response.data.responses[0].localizedObjectAnnotations?.map(
+        (objectAnnotation: ObjectAnnotation) => {
+          const object = {
+            name: objectAnnotation.name,
+          };
+          return object;
+        }
+      );
       faceAnnotations.value = response.data.responses[0].faceAnnotations
         ?.map((faceAnnotation: FaceAnnotation) => {
           // return faceAnnotation.boundingPoly.vertices;
           const annotation: Annotation = {
-            boundingPoly:  faceAnnotation.boundingPoly.vertices.map(
-                (vertex: any) => {
-                  return {
-                    x: vertex.x,
-                    y: vertex.y,
-                  };
-                }
-              ),
+            boundingPoly: faceAnnotation.boundingPoly.vertices.map(
+              (vertex: any) => {
+                return {
+                  x: vertex.x,
+                  y: vertex.y,
+                };
+              }
+            ),
             title: "Face",
-            text: `Confidence: ${faceAnnotation.detectionConfidence.toFixed(
-              2
-            )}
+            text: `Confidence: ${faceAnnotation.detectionConfidence.toFixed(2)}
 joyLikelihood: ${faceAnnotation.joyLikelihood}
 sorrowLikelihood: ${faceAnnotation.sorrowLikelihood}
 angerLikelihood: ${faceAnnotation.angerLikelihood}
@@ -125,7 +148,8 @@ headwearLikelihood: ${faceAnnotation.headwearLikelihood}`,
             //   }
             // );
             const annotation: Annotation = {
-              boundingPoly: objectAnnotation.boundingPoly.normalizedVertices.map(
+              boundingPoly:
+                objectAnnotation.boundingPoly.normalizedVertices.map(
                   (vertex: any) => {
                     return {
                       x: vertex.x * imageDimensions.value.width,

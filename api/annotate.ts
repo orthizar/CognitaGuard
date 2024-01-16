@@ -28,6 +28,7 @@ const annotate = async (image: string) => {
         },
         body: JSON.stringify(body),
     });
+    console.log(response);
     return await response.json();
 };
 

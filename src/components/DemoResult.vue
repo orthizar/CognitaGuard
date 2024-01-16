@@ -88,6 +88,7 @@ const annotateImage = () => {
       faces.value = response.data.responses[0].faceAnnotations?.map(
         (faceAnnotation: FaceAnnotation) => {
           const face = {
+            boundingPoly: faceAnnotation.boundingPoly.vertices,
             joyLikelihood: faceAnnotation.joyLikelihood,
             sorrowLikelihood: faceAnnotation.sorrowLikelihood,
             angerLikelihood: faceAnnotation.angerLikelihood,
@@ -103,6 +104,14 @@ const annotateImage = () => {
         (objectAnnotation: ObjectAnnotation) => {
           const object = {
             name: objectAnnotation.name,
+            boundingPoly: objectAnnotation.boundingPoly.normalizedVertices.map(
+              (vertex: any) => {
+                return {
+                  x: vertex.x * imageDimensions.value.width,
+                  y: vertex.y * imageDimensions.value.height,
+                };
+              }
+            ),
           };
           return object;
         }

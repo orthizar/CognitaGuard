@@ -11,11 +11,11 @@ const annotate = async (image: string) => {
                 features: [
                     {
                         type: "FACE_DETECTION",
-                        maxResults: 30,
+                        maxResults: 100,
                     },
                     {
                         type: "OBJECT_LOCALIZATION",
-                        maxResults: 30,
+                        maxResults: 100,
                     },
                 ],
             },

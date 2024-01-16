@@ -86,8 +86,9 @@ const annotateImage = () => {
     .then((response: AxiosResponse) => {
       console.log(response);
       faces.value = response.data.responses[0].faceAnnotations?.map(
-        (faceAnnotation: FaceAnnotation) => {
+        (faceAnnotation: FaceAnnotation, index: number) => {
           const face = {
+            name: `Face ${index + 1}`,
             boundingPoly: faceAnnotation.boundingPoly.vertices,
             joyLikelihood: faceAnnotation.joyLikelihood,
             sorrowLikelihood: faceAnnotation.sorrowLikelihood,

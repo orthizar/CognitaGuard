@@ -35,8 +35,10 @@ const finalScore = computed(() => {
   const remainingObjects = props.objects.filter((o) => !o.face);
   const remainingObjectsScore = remainingObjects.reduce(
     (a, b) => Math.max(a, b.score),
-    0.5
+    0
   );
+
+  console.log(scores, remainingObjectsScore)
 
   if (Math.max(...scores.map((s) => s.total)) < remainingObjectsScore * 0.5) {
     return {

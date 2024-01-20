@@ -109,7 +109,7 @@ const tooltipTop = computed(() => {
 
 const faceScore = computed(() => {
   return Math.round(
-    props.faces.reduce((a, b) => Math.max(a, b.score), 0.5) * 100
+    props.faces.reduce((a, b) => Math.max(a, b.score), 0) * 100
   );
 });
 

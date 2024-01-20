@@ -8,10 +8,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#70C1B3',
-        dark: '#30323D',
-        'dark-darker': '#25272F',
-        light: '#4D5061',
+        primary: '#34B1E8',
+        'primary-dark': '#117099',
+        'gray-lighter': '#999999',
+        'gray-light': '#3F3F46',
+        gray: '#27272A',
+        'gray-dark': '#18181B',
+        'gray-darker': '#09090B',
       },
     },
   },

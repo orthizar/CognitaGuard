@@ -1,6 +1,14 @@
 .btn {
-  @apply text-xl font-bold leading-none uppercase text-dark;
-  @apply rounded-full shadow-md bg-primary;
-  @apply px-10 py-4;
-  @apply transition-opacity hover:opacity-80;
+  @apply block w-48 py-3;
+  @apply text-base font-bold leading-tight;
+  @apply rounded-md shadow-md border-[3px] border-primary hover:border-primary-dark;
+  @apply transition-colors duration-300;
+
+  &.btn--primary {
+    @apply bg-primary hover:bg-primary-dark text-gray-dark;
+  }
+
+  &.btn--secondary {
+    @apply text-primary hover:text-primary-dark;
+  }
 }

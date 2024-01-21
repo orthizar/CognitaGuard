@@ -16,27 +16,26 @@
           <div>
             <h2 class="font-normal">Über das Projekt</h2>
             <p class="mt-4">
-              Cognita Guard verwendet die Google Vision AI, um Gesichter und
-              Objekte auf Bildern zu erkennen. Diese KI wurde nicht spezifisch
-              trainiert, um gefährliche Objekte und Situationen zu erkennen,
-              also werden nicht immer alle Aspekte in den Bildern richtig
-              erkannt. Alle erkannten Objekte werden unter dem Resultat als rote
-              Boxen in den zwei Bildern angezeigt. Wenn man mit der Maus über
-              eine dieser Boxen fährt, können weitere Informationen zum Gesicht
-              oder Objekt angezeigt werden. Das Gleiche kann für Mobile mit
-              einem Klick erreicht werden.
+              Cognita Guard verwendet die Google Vision AI, um Gesichter,
+              Emotionen und Objekte in Bildern zu erkennen. Die Google Vision AI
+              ist limitiert, da ihr Modell nicht darauf trainiert wurde,
+              gefährliche Situationen oder Gegenstände zu erkennen.
+              <br /><br />
+              Zur Nachvollziehbarkeit werden alle erkannten Objekte und Personen
+              unter dem Resultat als rote Boxen in den zwei Bildern angezeigt.
+              Mittels der Maus kann man über eine der Boxen fahren oder auf dem
+              Smartphone auf die Box klicken, um erweiterte Informationen über
+              zum Beispiel die Emotionen einer Person zu erhalten.
               <br />
-              <br />
-              Um den Risikoscore zu berechnen, werden zuerst alle Objekte zu
-              einem Gesicht zugewiesen. Die Gefahr von einer Person besteht
-              danach aus der berechneten Gefahr von den Emotionen und dem
-              gefährlichsten zur Verfügung stehenden Objekt. Falls keine
-              Gesichter erkannt werden oder keine gefährlichen Objekte, wird nur
-              der andere Faktor verwendet für die Berechnung. Als gesamthafte
-              Risikobewertung haben wir dann den Score von der gefährlichsten
-              eingestuften Person genommen.
-              <br />
-              <br />
+              Für die Berechnung des Risikoscore werden nur Objekte
+              berücksichtigt, welche zu einer Person zugewiesen werden können.
+              Die Gefahr einer einzelnen Person wird im Anschluss aus der Gefahr
+              der Emotionen und allen Gefahren der Objekte dieser Person
+              errechnet. Der Gesamt-Risikoscore wird anschliessend anhand der
+              gefährlichsten Person definiert. Sollte keine Person im Bild
+              gefunden werden, wird der Gesamt-Risikoscore anhand des
+              gefährlichsten Gegenstandes definiert.
+              <br /><br />
               Die Gefahr von einem Gesicht wird anhand der Wahrscheinlichkeiten
               der Emotionen berechnet. Wut, Kummer oder Kopfbedeckungen
               verursachen einen höheren Score, wobei Freude die

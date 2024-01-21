@@ -5,6 +5,7 @@ import type DemoObject from "@/interfaces/DemoObject";
 // map object names to scores
 const OBJECT_SCORES: { [key: string]: number } = {
   Knife: 0.9,
+  "Kitchen knife": 0.9,
   Fork: 0.5,
   Gun: 1,
   Hammer: 0.5,

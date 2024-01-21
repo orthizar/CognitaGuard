@@ -52,18 +52,18 @@ const mapObjectAnnotations = (
 const getPolygonPoints = (polygon: Coordinate[]): string => {
   return polygon
     .map((vertex: Coordinate) => {
-      return `${vertex.x},${vertex.y}`;
+      return `${vertex.x || 0},${vertex.y || 0}`;
     })
     .join(" ");
 };
 
 const getZ = (object: Annotation): number => {
   const x = object.boundingPoly.map((vertex) => {
-    return vertex.x;
+    return vertex.x || 0;
   });
 
   const y = object.boundingPoly.map((vertex) => {
-    return vertex.y;
+    return vertex.y || 0;
   });
 
   const minX = Math.min.apply(null, x);

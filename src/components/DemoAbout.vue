@@ -16,13 +16,33 @@
           <div>
             <h2 class="font-normal">Über das Projekt</h2>
             <p class="mt-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Cognita Guard verwendet die Google Vision AI, um Gesichter und
+              Objekte auf Bildern zu erkennen. Diese KI wurde nicht spezifisch
+              trainiert, um gefährliche Objekte und Situationen zu erkennen,
+              also werden nicht immer alle Aspekte in den Bildern richtig
+              erkannt. Alle erkannten Objekte werden unter dem Resultat als rote
+              Boxen in den zwei Bildern angezeigt. Wenn man mit der Maus über
+              eine dieser Boxen fährt, können weitere Informationen zum Gesicht
+              oder Objekt angezeigt werden. Das Gleiche kann für Mobile mit
+              einem Klick erreicht werden.
+              <br />
+              <br />
+              Um den Risikoscore zu berechnen, werden zuerst alle Objekte zu
+              einem Gesicht zugewiesen. Die Gefahr von einer Person besteht
+              danach aus der berechneten Gefahr von den Emotionen und dem
+              gefährlichsten zur Verfügung stehenden Objekt. Falls keine
+              Gesichter erkannt werden oder keine gefährlichen Objekte, wird nur
+              der andere Faktor verwendet für die Berechnung. Als gesamthafte
+              Risikobewertung haben wir dann den Score von der gefährlichsten
+              eingestuften Person genommen.
+              <br />
+              <br />
+              Die Gefahr von einem Gesicht wird anhand der Wahrscheinlichkeiten
+              der Emotionen berechnet. Wut, Kummer oder Kopfbedeckungen
+              verursachen einen höheren Score, wobei Freude die
+              Gefahreneinstufung senken kann. Für Objekte wird der Name des
+              Objekts bewertet. So ergeben Messer und Hammer einen hohen
+              Risikoscore und Kleidung eine Bewertung von 0 %.
             </p>
           </div>
           <button

@@ -1,70 +1,67 @@
 <template>
-  <div class="mt-7 xl:mt-12 xl:max-w-[75%] xl:mx-auto">
-    <h3 class="xl:text-lg">Emotionen: {{ faceScore }}% Gefährlich</h3>
-    <div class="relative mt-1.5" ref="container">
-      <img
-        class="object-contain w-full h-full"
-        v-if="props.image"
-        :src="props.image"
-        alt="image"
+  <div class="relative mt-1.5" ref="container">
+    <img
+      class="object-contain w-full h-full"
+      v-if="props.image"
+      :src="props.image"
+      alt="image"
+    />
+
+    <svg
+      :viewBox="`0 0 ${props.imageDimensions.width} ${props.imageDimensions.height}`"
+      class="absolute top-0 left-0 w-full h-full"
+    >
+      <polygon
+        v-for="face in sortedFaces"
+        :key="face.id"
+        :points="getPolygonPoints(face.boundingPoly)"
+        class="annotation fill-transparent stroke-[6px] hover:stroke-[8px] stroke-red-600"
+        @click="toggleTooltip(face)"
+        @mouseover="showTooltip(face)"
+        @mouseout="hideTooltip"
       />
+    </svg>
 
-      <svg
-        :viewBox="`0 0 ${props.imageDimensions.width} ${props.imageDimensions.height}`"
-        class="absolute top-0 left-0 w-full h-full"
-      >
-        <polygon
-          v-for="face in sortedFaces"
-          :key="face.id"
-          :points="getPolygonPoints(face.boundingPoly)"
-          class="annotation fill-transparent stroke-[6px] hover:stroke-[8px] stroke-red-600"
-          @click="toggleTooltip(face)"
-          @mouseover="showTooltip(face)"
-          @mouseout="hideTooltip"
-        />
-      </svg>
-
-      <div
-        v-if="selectedFace !== null"
-        class="absolute z-10 p-2 rounded-md bg-gray-darker"
-        :style="{ top: tooltipTop, left: tooltipLeft }"
-      >
-        <h4>Person {{ selectedFace.id }}</h4>
-        <table>
-          <tr>
-            <td>Freude</td>
-            <td>{{ getEmotionFactor(selectedFace.joyLikelihood) }}%</td>
-          </tr>
-          <tr>
-            <td>Kummer</td>
-            <td>{{ getEmotionFactor(selectedFace.sorrowLikelihood) }}%</td>
-          </tr>
-          <tr>
-            <td>Wut</td>
-            <td>{{ getEmotionFactor(selectedFace.angerLikelihood) }}%</td>
-          </tr>
-          <tr>
-            <td>Überraschung</td>
-            <td>{{ getEmotionFactor(selectedFace.surpriseLikelihood) }}%</td>
-          </tr>
-          <tr>
-            <td>Unterbelichtet</td>
-            <td>
-              {{ getEmotionFactor(selectedFace.underExposedLikelihood) }}%
-            </td>
-          </tr>
-          <tr>
-            <td class="pr-2">Verschwommen</td>
-            <td>{{ getEmotionFactor(selectedFace.blurredLikelihood) }}%</td>
-          </tr>
-          <tr>
-            <td>Kopfbedeckung</td>
-            <td>{{ getEmotionFactor(selectedFace.headwearLikelihood) }}%</td>
-          </tr>
-        </table>
-        <hr class="my-2" />
-        <p>{{ Math.round(selectedFace.score * 100) }}% Gefährlich</p>
-      </div>
+    <div
+      v-if="selectedFace !== null"
+      class="absolute z-10 p-2 rounded-md bg-gray-darker"
+      :style="{ top: tooltipTop, left: tooltipLeft }"
+    >
+      <h4>Person {{ selectedFace.id }}</h4>
+      <table>
+        <tr>
+          <td>Freude</td>
+          <td>{{ getEmotionFactor(selectedFace.joyLikelihood) }}%</td>
+        </tr>
+        <tr>
+          <td>Kummer</td>
+          <td>{{ getEmotionFactor(selectedFace.sorrowLikelihood) }}%</td>
+        </tr>
+        <tr>
+          <td>Wut</td>
+          <td>{{ getEmotionFactor(selectedFace.angerLikelihood) }}%</td>
+        </tr>
+        <tr>
+          <td>Überraschung</td>
+          <td>{{ getEmotionFactor(selectedFace.surpriseLikelihood) }}%</td>
+        </tr>
+        <tr>
+          <td>Unterbelichtet</td>
+          <td>
+            {{ getEmotionFactor(selectedFace.underExposedLikelihood) }}%
+          </td>
+        </tr>
+        <tr>
+          <td class="pr-2">Verschwommen</td>
+          <td>{{ getEmotionFactor(selectedFace.blurredLikelihood) }}%</td>
+        </tr>
+        <tr>
+          <td>Kopfbedeckung</td>
+          <td>{{ getEmotionFactor(selectedFace.headwearLikelihood) }}%</td>
+        </tr>
+      </table>
+      <hr class="my-2" />
+      <p>{{ Math.round(selectedFace.score * 100) }}% Gefährlich</p>
     </div>
   </div>
 </template>
@@ -105,12 +102,6 @@ const tooltipTop = computed(() => {
     props.imageDimensions.height;
   const y = selectedFace.value?.boundingPoly[1].y;
   return y * scale - 3 + "px";
-});
-
-const faceScore = computed(() => {
-  return Math.round(
-    props.faces.reduce((a, b) => Math.max(a, b.score), 0) * 100
-  );
 });
 
 const getEmotionFactor = (likelihood: string) => {

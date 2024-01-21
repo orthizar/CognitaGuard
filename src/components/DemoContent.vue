@@ -11,10 +11,11 @@
         ></div>
 
         <div
-          class="relative flex flex-col h-full px-5 pt-6 xl:p-10 xl:pb-12 pb-9 bg-gray-dark bg-opacity-90 rounded-2xl"
+          class="relative flex flex-col justify-between h-full px-5 pt-6 xl:p-10 xl:pb-12 pb-9 bg-gray-dark bg-opacity-90 rounded-2xl"
         >
-          <DemoUpload v-if="!isLoading && !image" @submit="submitImage" />
+          <DemoError v-if="isError" @reset="reset" />
           <DemoLoading v-else-if="isLoading" />
+          <DemoUpload v-else-if="!image" @submit="submitImage" />
           <DemoResult
             v-else
             :faces="faces"
@@ -38,6 +39,7 @@ import { Buffer } from "buffer";
 import DemoUpload from "@/components/DemoUpload.vue";
 import DemoLoading from "@/components/DemoLoading.vue";
 import DemoResult from "@/components/DemoResult.vue";
+import DemoError from "@/components/DemoError.vue";
 
 import type DemoFace from "@/interfaces/DemoFace";
 import type DemoObject from "@/interfaces/DemoObject";
@@ -50,6 +52,7 @@ import { assignScores } from "@/helpers/score";
 const emit = defineEmits(["content", "about"]);
 
 const isLoading = ref(false);
+const isError = ref(false);
 
 const image = ref("");
 const imageDimensions: Ref<Dimensions> = ref({ width: 0, height: 0 });
@@ -66,27 +69,31 @@ const submitImage = (submittedImage: string) => {
 const doAnnotateImage = async () => {
   isLoading.value = true;
 
-  const dimensions = sizeOf(Buffer.from(image.value.split(",")[1], "base64"));
-
-  imageDimensions.value = {
-    width: dimensions.width ?? 0,
-    height: dimensions.height ?? 0,
-  };
-  const response = await annotateImage(image.value);
-
-  faces.value = mapFaceAnnotations(response.data.responses[0].faceAnnotations);
-  objects.value = mapObjectAnnotations(
-    response.data.responses[0].localizedObjectAnnotations,
-    imageDimensions.value
-  );
-
-  assignScores(faces.value, objects.value);
-
+  try {
+    const dimensions = sizeOf(Buffer.from(image.value.split(",")[1], "base64"));
+  
+    imageDimensions.value = {
+      width: dimensions.width ?? 0,
+      height: dimensions.height ?? 0,
+    };
+    const response = await annotateImage(image.value);
+  
+    faces.value = mapFaceAnnotations(response.data.responses[0].faceAnnotations);
+    objects.value = mapObjectAnnotations(
+      response.data.responses[0].localizedObjectAnnotations,
+      imageDimensions.value
+    );
+  
+    assignScores(faces.value, objects.value);
+  } catch {
+    isError.value = true;
+  }
   isLoading.value = false;
 };
 
 const reset = () => {
   image.value = "";
   nextTick(() => emit("content"));
+  isError.value = false;
 };
 </script>
